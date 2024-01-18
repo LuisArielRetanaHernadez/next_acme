@@ -1,8 +1,16 @@
-export default function Page() {
+import { fetchRevenue } from "../lib/data"
+import { lusitana } from "../ui/fonts"
+
+export default async function Page() {
+
+  const revenue = await fetchRevenue()
+  console.log(revenue)
   return (
-    <div>
-      <h1>Page 2</h1>
-    </div>
+    <main>
+      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+        Dashboard
+      </h1>
+    </main>
   )
 
-}
+} 
