@@ -7,6 +7,7 @@ const CreateInvoiceSchema = z.object({
   customerId: z.string(),
   amount: z.coerce.number(),
   status: z.enum(['paid', 'unpaid']),
+  date: z.string()
 })
 
 const CreateInvoiceFromSchema = CreateInvoiceSchema.omit({
@@ -15,11 +16,13 @@ const CreateInvoiceFromSchema = CreateInvoiceSchema.omit({
 })
 
 export async function createInvoice(formData: FormData) {
-  // const rawFormData = { 
-  //   customerId: formData.get('customerId'),
-  //   amount: formData.get('amount'),
-  //   status: formData.get('status'),
-  // }
+  const { customerId, amount, status } = CreateInvoiceFromSchema.parse({ 
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  })
 
-  const rawFormData = Object.fromEntries(formData.entries())
+  const amountInCents = amount * 100
+
+  const [date] = new Date().toISOString().split('T')
 }
