@@ -2,18 +2,20 @@
 import { z } from 'zod'
 import { Invoice } from './definitions'
 import { sql } from '@vercel/postgres'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 const CreateInvoiceSchema = z.object({
   id: z.string(),
   customerId: z.string(),
   amount: z.coerce.number(),
-  status: z.enum(['paid', 'unpaid']),
+  status: z.enum(['pending', 'paid']),
   date: z.string()
 })
 
 const CreateInvoiceFromSchema = CreateInvoiceSchema.omit({
   id: true,
-  status: true,
+  date: true,
 })
 
 export async function createInvoice(formData: FormData) {
@@ -28,5 +30,8 @@ export async function createInvoice(formData: FormData) {
   const [date] = new Date().toISOString().split('T')
 
   await sql`INSERT INTO invoices (customer_id, amount, status, date)
-  VALUES (${customerId}, ${amountInCents}, ${amount}, ${status}, ${date})`
+  VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`
+
+  revalidatePath('/dashboard/invoices')
+  redirect('/dashboard/invoices')
 }
