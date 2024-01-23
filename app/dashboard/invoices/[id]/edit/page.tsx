@@ -6,7 +6,7 @@ export default async function Page(
   { params: { id } }:
   { params: {id: string} }
 ) {
-  const [invoice, customers] = await Promise.all([
+  const [customers, invoice] = await Promise.all([
     fetchCustomers(),
     fetchInvoiceById(id),
   ])
@@ -22,7 +22,7 @@ export default async function Page(
           },
         ]}
       />
-      {/* <Form invoice={invoice} customers={customers} /> */}
+      <Form invoice={invoice} customers={customers} />
     </main>
   );
 }
