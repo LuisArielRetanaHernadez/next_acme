@@ -18,7 +18,7 @@ const CreateInvoiceFromSchema = CreateInvoiceSchema.omit({
   date: true,
 })
 
-const updateInvoiceFromSchema = CreateInvoiceSchema.omit({ id: true, formData: FormData})
+const updateInvoiceFromSchema = CreateInvoiceSchema.omit({ id: true, date: true})
 
 export async function createInvoice(formData: FormData) {
   const { customerId, amount, status } = CreateInvoiceFromSchema.parse({ 
