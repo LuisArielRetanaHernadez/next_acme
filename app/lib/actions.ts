@@ -35,17 +35,22 @@ export type State = {
 }
 
 export async function createInvoice(prevState: State, formData: FormData) {
+  const validateFields = CreateInvoiceFromSchema.safeParse({ 
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  })
+
+  if (!validateFields.success) {
+    return {
+      error: validateFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Falied to Create Invoice'
+    }
+  }
+  const { customerId, amount, status } = validateFields.data
+  const amountInCents = amount * 100
+  const [date] = new Date().toISOString().split('T')
   try {
-    const validateFields = CreateInvoiceFromSchema.safeParse({ 
-      customerId: formData.get('customerId'),
-      amount: formData.get('amount'),
-      status: formData.get('status'),
-    })
-
-    // const amountInCents = amount * 100
-
-    const [date] = new Date().toISOString().split('T')
-
     await sql`INSERT INTO invoices (customer_id, amount, status, date)
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`
 
