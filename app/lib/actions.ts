@@ -36,13 +36,13 @@ export type State = {
 
 export async function createInvoice(prevState: State, formData: FormData) {
   try {
-    const { customerId, amount, status } = CreateInvoiceFromSchema.parse({ 
+    const validateFields = CreateInvoiceFromSchema.safeParse({ 
       customerId: formData.get('customerId'),
       amount: formData.get('amount'),
       status: formData.get('status'),
     })
 
-    const amountInCents = amount * 100
+    // const amountInCents = amount * 100
 
     const [date] = new Date().toISOString().split('T')
 
