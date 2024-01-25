@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import { User } from "./app/lib/definitions";
 import { sql } from "@vercel/postgres";
+import bcrypt from 'bcrypt';
 
 async function getUser(email: string, password: string) {
   try {
@@ -26,6 +27,9 @@ export const { auth, signIn, signOut } = NextAuth({
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email, password);
           if (!user) return null;
+          const passwordMatche = await bcrypt.compare(password, user.password)
+          if (!passwordMatche) return null;
+          return user;
         }
 
         return null
